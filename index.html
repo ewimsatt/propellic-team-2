@@ -1,34 +1,830 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Propellic Hackathon — Team 2</title>
-    <style>
-      body {
-        min-height: 100vh;
-        margin: 0;
-        display: grid;
-        place-items: center;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #111827, #2563eb);
-        color: white;
-      }
-      main {
-        text-align: center;
-        padding: 2rem;
-      }
-      h1 {
-        font-size: clamp(2rem, 8vw, 5rem);
-        margin: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>Welcome to the Hackathon, Team 2!</h1>
-      <p style="margin-top:1rem;opacity:.7;">Sana is here and ready to build.</p>
-      <p style="margin-top:.5rem;opacity:.7;">Rebecca is here too — let's go!</p>
-    </main>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CRO Audit — Instant conversion audits for travel websites</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f5f0;
+      --surface:   #ffffff;
+      --border:    #e2e2da;
+      --text:      #1a1a1a;
+      --text-muted:#6b7280;
+      --accent:    #2563eb;
+      --accent-hover: #1d4ed8;
+      --critical-bg:  #fff1f1;
+      --critical-text:#b91c1c;
+      --warning-bg:   #fffbeb;
+      --warning-text: #92400e;
+      --good-bg:      #f0fdf4;
+      --good-text:    #166534;
+      --radius:    10px;
+      --shadow:    0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+    }
+
+    .logo-icon svg { width: 16px; height: 16px; fill: #fff; }
+
+    .logo-name {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--text);
+    }
+
+    .logo-tagline {
+      font-size: .75rem;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border);
+      padding-left: 10px;
+      margin-left: 2px;
+    }
+
+    @media (max-width: 500px) { .logo-tagline { display: none; } }
+
+    /* ── Page layout ── */
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* ── Hero / input card ── */
+    .hero {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: .5rem;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .input-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.75rem;
+    }
+
+    .input-row {
+      display: flex;
+      gap: .75rem;
+    }
+
+    @media (max-width: 580px) {
+      .input-row { flex-direction: column; }
+      .input-row .btn-primary { width: 100%; justify-content: center; }
+    }
+
+    .url-input {
+      flex: 1;
+      height: 44px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0 .875rem;
+      font-size: .9375rem;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .url-input:focus { border-color: var(--accent); background: #fff; }
+    .url-input::placeholder { color: #b0b0a8; }
+
+    .btn-primary {
+      height: 44px;
+      padding: 0 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      white-space: nowrap;
+      transition: background .15s, transform .1s;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* Goal toggle */
+    .goal-row {
+      margin-top: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .goal-label {
+      font-size: .8125rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: .01em;
+    }
+
+    .toggle-group {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .toggle-group input[type="radio"] { display: none; }
+
+    .toggle-group label {
+      padding: .3rem .85rem;
+      border-radius: 6px;
+      font-size: .8125rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+
+    .toggle-group input[type="radio"]:checked + label {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    }
+
+    /* ── Loading state ── */
+    .loading {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .loading.visible { display: block; }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 1.25rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-msg {
+      font-size: .9rem;
+      color: var(--text-muted);
+      min-height: 1.4em;
+    }
+
+    .loading-step {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+    }
+
+    .loading-step-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .3; transform: scale(.8); }
+      50%       { opacity: 1;  transform: scale(1.2); }
+    }
+
+    /* ── Results ── */
+    .results {
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    .results.visible { display: block; }
+
+    /* Score card */
+    .score-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .score-circle {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .score-circle svg {
+      width: 80px;
+      height: 80px;
+      transform: rotate(-90deg);
+    }
+
+    .score-track { fill: none; stroke: var(--border); stroke-width: 7; }
+    .score-fill  {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-dasharray: 201;
+      stroke-dashoffset: 54; /* 201*(1-0.73) ≈ 54 */
+      transition: stroke-dashoffset 1s ease;
+    }
+
+    .score-number {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .score-meta { flex: 1; min-width: 180px; }
+
+    .score-meta h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: .2rem;
+    }
+
+    .score-meta p {
+      font-size: .85rem;
+      color: var(--text-muted);
+    }
+
+    .score-pills {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .5rem;
+    }
+
+    .pill {
+      font-size: .75rem;
+      font-weight: 600;
+      padding: .2rem .6rem;
+      border-radius: 999px;
+    }
+
+    .pill-critical { background: var(--critical-bg); color: var(--critical-text); }
+    .pill-warning  { background: var(--warning-bg);  color: var(--warning-text); }
+    .pill-good     { background: var(--good-bg);     color: var(--good-text); }
+
+    /* Section cards */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+      gap: 1rem;
+    }
+
+    .section-header:hover { background: #fafaf8; }
+
+    .section-title-group {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .section-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .section-icon svg { width: 16px; height: 16px; }
+
+    .icon-fold  { background: #eff6ff; }
+    .icon-fold svg { stroke: #2563eb; }
+    .icon-trust { background: #f0fdf4; }
+    .icon-trust svg { stroke: #16a34a; }
+    .icon-form  { background: #fdf4ff; }
+    .icon-form svg { stroke: #9333ea; }
+
+    .section-title { font-size: .9rem; font-weight: 700; }
+    .section-subtitle { font-size: .78rem; color: var(--text-muted); }
+
+    .section-badges { display: flex; gap: .35rem; flex-wrap: wrap; }
+
+    .chevron {
+      color: var(--text-muted);
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+
+    .section-card.open .chevron { transform: rotate(180deg); }
+
+    .section-body {
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-card.open .section-body { display: block; }
+
+    /* Findings */
+    .finding {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: .75rem 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .finding:last-child { border-bottom: none; }
+
+    .badge {
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .25rem .6rem;
+      border-radius: 5px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+
+    .badge-critical { background: var(--critical-bg); color: var(--critical-text); }
+    .badge-warning  { background: var(--warning-bg);  color: var(--warning-text); }
+    .badge-good     { background: var(--good-bg);     color: var(--good-text); }
+
+    .finding-body {}
+
+    .finding-title {
+      font-size: .875rem;
+      font-weight: 600;
+      margin-bottom: .25rem;
+    }
+
+    .finding-desc {
+      font-size: .825rem;
+      color: var(--text-muted);
+      margin-bottom: .5rem;
+    }
+
+    .finding-fix {
+      font-size: .8rem;
+      background: #f8f8f5;
+      border-left: 3px solid var(--accent);
+      padding: .5rem .75rem;
+      border-radius: 0 6px 6px 0;
+      color: var(--text);
+    }
+
+    .finding-fix strong {
+      display: block;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      margin-bottom: .15rem;
+    }
+
+    /* ── Footer note ── */
+    .footer-note {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: .78rem;
+      color: #b0b0a8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 10H3z"/></svg>
+      </div>
+      <span class="logo-name">CRO Audit</span>
+      <span class="logo-tagline">Instant conversion audits for travel websites</span>
+    </div>
+  </header>
+
+  <!-- Page -->
+  <div class="page">
+
+    <div class="hero">
+      <h1>Find what's killing your bookings.</h1>
+      <p>Paste a URL and get a detailed CRO audit in seconds — no GA4 or Hotjar required.</p>
+    </div>
+
+    <!-- Input card -->
+    <div class="input-card">
+      <div class="input-row">
+        <input
+          class="url-input"
+          id="urlInput"
+          type="url"
+          placeholder="https://example-hotel.com"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="btn-primary" id="runBtn" onclick="runAudit()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Run Audit
+        </button>
+      </div>
+
+      <div class="goal-row">
+        <span class="goal-label">Audit goal</span>
+        <div class="toggle-group">
+          <input type="radio" name="goal" id="goalBooking" value="booking" checked />
+          <label for="goalBooking">Direct Booking</label>
+          <input type="radio" name="goal" id="goalLead" value="lead" />
+          <label for="goalLead">Lead Submission</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="loading" id="loadingState">
+      <div class="spinner"></div>
+      <div class="loading-msg">
+        <div class="loading-step">
+          <div class="loading-step-dot"></div>
+          <span id="loadingText">Initializing audit…</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results" id="resultsArea">
+
+      <!-- Score card -->
+      <div class="score-card">
+        <div class="score-circle">
+          <svg viewBox="0 0 72 72">
+            <circle class="score-track" cx="36" cy="36" r="32" />
+            <circle class="score-fill" id="scoreFill" cx="36" cy="36" r="32" />
+          </svg>
+          <div class="score-number">72</div>
+        </div>
+        <div class="score-meta">
+          <h2>Overall CRO Score: 72 / 100</h2>
+          <p id="auditedUrl" style="font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;"></p>
+          <p>Your site has strong bones but is losing bookings to friction in the form flow and missing trust signals. See findings below.</p>
+          <div class="score-pills">
+            <span class="pill pill-critical">2 Critical</span>
+            <span class="pill pill-warning">4 Warnings</span>
+            <span class="pill pill-good">3 Good</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 1: Above the Fold -->
+      <div class="section-card open" id="section1">
+        <div class="section-header" onclick="toggleSection('section1')">
+          <div class="section-title-group">
+            <div class="section-icon icon-fold">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+              </svg>
+            </div>
+            <div>
+              <div class="section-title">Above the Fold</div>
+              <div class="section-subtitle">First impression & primary CTA visibility</div>
+            </div>
+          </div>
+          <div class="section-badges">
+            <span class="pill pill-critical">1 Critical</span>
+            <span class="pill pill-warning">1 Warning</span>
+            <span class="pill pill-good">1 Good</span>
+          </div>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="section-body">
+
+          <div class="finding">
+            <span class="badge badge-critical">Critical</span>
+            <div class="finding-body">
+              <div class="finding-title">Hero has no destination headline</div>
+              <div class="finding-desc">The hero image is beautiful but contains no text overlay stating the destination, property name, or value proposition. Visitors have to scroll to understand what they're looking at.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                Add a prominent H1 overlay on the hero image — e.g. "Book direct &amp; save 15% — Santorini's #1 boutique hotel." Keep contrast ratio above 4.5:1.
+              </div>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="badge badge-warning">Warning</span>
+            <div class="finding-body">
+              <div class="finding-title">"Book Now" CTA is below the fold on mobile</div>
+              <div class="finding-desc">On a 375px viewport, the primary booking button requires scrolling ~180px. Users who arrive via paid search may bounce before ever seeing it.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                Add a sticky bottom bar on mobile containing the CTA and a starting price anchor ("From $149/night · Book Now").
+              </div>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="badge badge-good">Good</span>
+            <div class="finding-body">
+              <div class="finding-title">Page load time is under 3 seconds</div>
+              <div class="finding-desc">LCP measured at ~2.4s on a simulated 4G connection. This is within acceptable range and won't penalize your conversion rate on speed alone.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                No immediate action needed. Consider lazy-loading below-fold images to bring LCP under 2s for further gains.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section 2: Trust & Reassurance -->
+      <div class="section-card open" id="section2">
+        <div class="section-header" onclick="toggleSection('section2')">
+          <div class="section-title-group">
+            <div class="section-icon icon-trust">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="section-title">Trust &amp; Reassurance</div>
+              <div class="section-subtitle">Reviews, credentials &amp; cancellation policy visibility</div>
+            </div>
+          </div>
+          <div class="section-badges">
+            <span class="pill pill-critical">1 Critical</span>
+            <span class="pill pill-warning">1 Warning</span>
+            <span class="pill pill-good">1 Good</span>
+          </div>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="section-body">
+
+          <div class="finding">
+            <span class="badge badge-critical">Critical</span>
+            <div class="finding-body">
+              <div class="finding-title">No trust badges near the booking widget</div>
+              <div class="finding-desc">TripAdvisor rating, Google review count, and security seals are absent from the booking area. Trust signals adjacent to CTAs can lift conversions by 10–25%.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                Add a trust bar directly above or below the booking widget: TripAdvisor traveler rating, Google star count, and a "Secure checkout" badge. Limit to 3 logos to avoid clutter.
+              </div>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="badge badge-warning">Warning</span>
+            <div class="finding-body">
+              <div class="finding-title">Cancellation policy is only in the footer</div>
+              <div class="finding-desc">Travelers are highly sensitive to cancellation risk. Burying the policy in footer text creates uncertainty that causes hesitation at the checkout step.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                Surface a one-line policy summary directly beside the CTA — e.g., "Free cancellation up to 48 hours before arrival" — with a link to full terms.
+              </div>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="badge badge-good">Good</span>
+            <div class="finding-body">
+              <div class="finding-title">SSL certificate is valid and visible</div>
+              <div class="finding-desc">The site loads over HTTPS with a valid certificate and the browser padlock is displayed. This is table stakes but eliminates a common drop-off trigger.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                No action needed. Ensure your booking iframe or third-party widget also runs on HTTPS to avoid mixed-content warnings.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section 3: Form & Booking Flow -->
+      <div class="section-card open" id="section3">
+        <div class="section-header" onclick="toggleSection('section3')">
+          <div class="section-title-group">
+            <div class="section-icon icon-form">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="14" rx="2"/>
+                <line x1="7" y1="19" x2="17" y2="19"/>
+                <line x1="12" y1="17" x2="12" y2="19"/>
+              </svg>
+            </div>
+            <div>
+              <div class="section-title">Form &amp; Booking Flow</div>
+              <div class="section-subtitle">Date picker, guest selector &amp; checkout friction</div>
+            </div>
+          </div>
+          <div class="section-badges">
+            <span class="pill pill-warning">2 Warnings</span>
+            <span class="pill pill-good">1 Good</span>
+          </div>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="section-body">
+
+          <div class="finding">
+            <span class="badge badge-warning">Warning</span>
+            <div class="finding-body">
+              <div class="finding-title">Date picker requires 3 clicks before showing availability</div>
+              <div class="finding-desc">Users must click a field, select check-in, then select check-out before any availability or pricing appears. Each additional interaction step has a measurable drop-off rate.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                Use an inline date-range picker that renders on page load with the current week pre-selected. Show a live price update as soon as dates are chosen.
+              </div>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="badge badge-warning">Warning</span>
+            <div class="finding-body">
+              <div class="finding-title">Guest selector defaults to 1 adult</div>
+              <div class="finding-desc">Most leisure travel bookings are for couples or families. Defaulting to 1 adult creates a mismatch and adds a required interaction before the user can see relevant pricing.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                Default to 2 adults. Consider adding a "Traveling with kids?" prompt as a secondary option to guide family bookings into the right room category.
+              </div>
+            </div>
+          </div>
+
+          <div class="finding">
+            <span class="badge badge-good">Good</span>
+            <div class="finding-body">
+              <div class="finding-title">Price is shown before the final confirmation step</div>
+              <div class="finding-desc">The total price including taxes is visible on the booking summary page before the user enters payment details. This reduces sticker-shock abandonment at checkout.</div>
+              <div class="finding-fix">
+                <strong>Recommended Fix</strong>
+                No action needed. Consider also surfacing a per-night breakdown to reinforce value perception alongside the total.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /results -->
+
+    <p class="footer-note">CRO Audit · Hackathon build · Results are illustrative mock data</p>
+  </div><!-- /page -->
+
+  <script>
+    const loadingMessages = [
+      "Analyzing above-the-fold experience…",
+      "Checking trust signals…",
+      "Reviewing form friction…",
+      "Scoring mobile usability…",
+      "Compiling recommendations…",
+    ];
+
+    function runAudit() {
+      const input = document.getElementById("urlInput");
+      const url   = input.value.trim() || "https://example-hotel.com";
+      const btn   = document.getElementById("runBtn");
+
+      // Hide any existing results
+      document.getElementById("resultsArea").classList.remove("visible");
+      document.getElementById("loadingState").classList.remove("visible");
+
+      // Show loading
+      const loading = document.getElementById("loadingState");
+      const loadingText = document.getElementById("loadingText");
+      loading.classList.add("visible");
+      btn.disabled = true;
+
+      let step = 0;
+      loadingText.textContent = loadingMessages[0];
+
+      const interval = setInterval(() => {
+        step++;
+        if (step < loadingMessages.length) {
+          loadingText.textContent = loadingMessages[step];
+        } else {
+          clearInterval(interval);
+          loading.classList.remove("visible");
+          btn.disabled = false;
+
+          // Set audited URL label
+          document.getElementById("auditedUrl").textContent = url;
+
+          // Animate score ring
+          const fill = document.getElementById("scoreFill");
+          const circumference = 2 * Math.PI * 32; // ~201
+          const score = 72;
+          const offset = circumference * (1 - score / 100);
+          fill.style.strokeDasharray  = circumference;
+          fill.style.strokeDashoffset = circumference; // start empty
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              fill.style.strokeDashoffset = offset;
+            });
+          });
+
+          // Show results
+          document.getElementById("resultsArea").classList.add("visible");
+          document.getElementById("resultsArea").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 1100);
+    }
+
+    function toggleSection(id) {
+      document.getElementById(id).classList.toggle("open");
+    }
+
+    // Allow Enter key to trigger audit
+    document.getElementById("urlInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") runAudit();
+    });
+  </script>
+
+  <!-- Rebecca is here too — previous setup note preserved from main. -->
+</body>
 </html>
