@@ -1,0 +1,149 @@
+{
+  "url": "https://example-travel.com",
+  "finalUrl": "https://example-travel.com",
+  "goalType": "direct_booking",
+  "scannedAt": "2026-05-08T10:00:00.000Z",
+  "screenshotBase64": null,
+  "visualAudit": {
+    "score": 58,
+    "signals": [
+      {
+        "id": "cta-above-fold",
+        "name": "Primary CTA Above Fold",
+        "status": "pass",
+        "detail": "Found 'Book Now' button in the hero section within the first viewport.",
+        "selector": "button.hero-cta",
+        "benchmarkNote": "Booking.com and Expedia both place primary booking CTAs in the hero — this reduces friction and is correlated with 20–30% higher click-through on desktop."
+      },
+      {
+        "id": "trust-review-count",
+        "name": "Review Count Visible",
+        "status": "warning",
+        "detail": "Review count of '42 reviews' is below the meaningful threshold of 50. Users may not find this persuasive.",
+        "selector": "span.review-count",
+        "benchmarkNote": "Travel sites see trust lift when review counts exceed 50. Airbnb and Viator display aggregate counts prominently; sites with >100 visible reviews convert at ~14% higher rate."
+      },
+      {
+        "id": "security-badge",
+        "name": "Security Badge Near Checkout CTA",
+        "status": "fail",
+        "detail": "No SSL or security badge detected near payment or booking CTA. This is a major trust gap for direct booking flows.",
+        "selector": null,
+        "benchmarkNote": "Security badges (Norton, McAfee, SSL Secure) near payment CTAs add approximately 18% conversion lift in travel e-commerce. This is a high-priority fix."
+      },
+      {
+        "id": "hero-value-prop",
+        "name": "Hero Value Proposition Clarity",
+        "status": "warning",
+        "detail": "Hero headline reads 'Welcome to Adventure' — this is vague. It does not communicate destination, price point, or unique differentiator within the first viewport.",
+        "selector": "h1",
+        "benchmarkNote": "Top travel sites (G Adventures, Intrepid) use specific hero copy like 'Small Group Tours from $1,299' to set expectations immediately and reduce bounce."
+      },
+      {
+        "id": "star-rating-display",
+        "name": "Star Rating Display",
+        "status": "pass",
+        "detail": "Star rating (4.6/5) is displayed with an accompanying review count, meeting best practice.",
+        "selector": "div.star-rating",
+        "benchmarkNote": "Displaying stars without a count is less effective — the combination of score + count is what drives trust according to BrightLocal consumer research."
+      },
+      {
+        "id": "urgency-signals",
+        "name": "Urgency / Scarcity Signals",
+        "status": "fail",
+        "detail": "No urgency language detected (e.g. 'Only 3 spots left', 'Offer ends Sunday', 'Booked 12 times today'). This is a missed conversion lever.",
+        "selector": null,
+        "benchmarkNote": "Booking.com's 'Only 2 rooms left!' and 'Viewed 8 times in last hour' messages are well-documented drivers of urgency — travel sites using scarcity messaging see 5–10% higher conversion."
+      }
+    ]
+  },
+  "frictionMap": {
+    "score": 55,
+    "formFieldCount": 9,
+    "benchmarkFieldCount": 6,
+    "items": [
+      {
+        "id": "excess-fields",
+        "priority": "high",
+        "title": "Form Has 3 Extra Fields vs Benchmark",
+        "description": "The lead submission form requests 9 fields (name, email, phone, company, travel dates, destination, group size, budget range, comments). Travel lead-gen benchmark is 4–6 fields. Each additional field reduces completion rate by ~11%, meaning this form may be losing ~33% of potential leads.",
+        "affectedSelector": "form#inquiry-form"
+      },
+      {
+        "id": "no-progress-indicator",
+        "priority": "high",
+        "title": "No Progress Indicator on Multi-Step Form",
+        "description": "The booking form spans multiple steps but does not display a progress bar or step counter. Users abandon multi-step forms at higher rates when they cannot see how much remains.",
+        "affectedSelector": "form#booking-form"
+      },
+      {
+        "id": "missing-labels",
+        "priority": "medium",
+        "title": "3 Form Fields Missing Accessible Labels",
+        "description": "Fields for 'departure-city', 'return-date', and 'promo-code' have placeholders but no associated <label> elements. This hurts autofill, screen readers, and mobile UX.",
+        "affectedSelector": "input#departure-city, input#return-date, input#promo-code"
+      },
+      {
+        "id": "no-inline-validation",
+        "priority": "medium",
+        "title": "No Inline Validation Feedback",
+        "description": "Errors only surface on form submission. Inline validation (showing a green tick or red hint as the user types) reduces error-related abandonment by up to 22% according to Baymard Institute research.",
+        "affectedSelector": "form#inquiry-form"
+      },
+      {
+        "id": "phone-required",
+        "priority": "low",
+        "title": "Phone Number Marked Required",
+        "description": "Requiring a phone number at the lead stage creates significant friction — many users are not ready to receive sales calls and will abandon the form. Consider making it optional or moving it to a follow-up step.",
+        "affectedSelector": "input[name='phone']"
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "id": "rec-security-badge",
+      "priority": 1,
+      "title": "Add Security Badge Adjacent to Booking CTA",
+      "rationale": "No trust signals exist near the primary conversion action. Travel consumers are risk-sensitive — they are handing over payment details and personal travel plans. A visible SSL or payment security badge reduces perceived risk and is associated with an ~18% conversion lift in travel e-commerce.",
+      "suggestedFix": "Place a small 'Secure Booking' badge (e.g. SSL lock icon + text, or a Norton/McAfee logo) within 40px of the 'Book Now' button. For direct bookings, also add 'Free cancellation' or 'Best price guarantee' copy beneath the CTA.",
+      "goalRelevance": "direct_booking",
+      "effort": "low"
+    },
+    {
+      "id": "rec-reduce-fields",
+      "priority": 2,
+      "title": "Reduce Lead Form to 5 Core Fields",
+      "rationale": "At 9 fields, the inquiry form is well above the 4–6 field benchmark for travel lead generation. Viator and G Adventures both use minimal first-step forms (name, email, destination, travel dates) and capture additional details via follow-up.",
+      "suggestedFix": "Keep only: First Name, Email, Destination of Interest, Travel Dates, Group Size. Move phone, budget, and comments to a confirmation step or post-submission email sequence.",
+      "goalRelevance": "lead_submission",
+      "effort": "medium"
+    },
+    {
+      "id": "rec-urgency-copy",
+      "priority": 3,
+      "title": "Introduce Scarcity and Urgency Signals",
+      "rationale": "No urgency language is present on the page. This is a major missed opportunity — travel is inherently time-sensitive (seat availability, seasonal pricing, group caps) and consumers respond to scarcity framing.",
+      "suggestedFix": "Add dynamic or static urgency messages near CTAs: 'Only 4 spots remaining for July departures', 'Price valid through Sunday', or 'Booked by 18 travelers this week'. Even static copy outperforms no copy.",
+      "goalRelevance": "both",
+      "effort": "low"
+    },
+    {
+      "id": "rec-hero-copy",
+      "priority": 4,
+      "title": "Rewrite Hero Headline with Specific Value Proposition",
+      "rationale": "The current hero headline 'Welcome to Adventure' communicates nothing differentiated. Users who land from paid search or social ads need immediate confirmation they are in the right place.",
+      "suggestedFix": "Replace with a specific, benefit-led headline such as: 'Small-Group Tours Through Southeast Asia — From $1,499 All-Inclusive' or 'Expert-Led European Rail Journeys — Book Direct & Save 15%'. Include a supporting subhead with the 2–3 strongest USPs.",
+      "goalRelevance": "both",
+      "effort": "medium"
+    },
+    {
+      "id": "rec-progress-indicator",
+      "priority": 5,
+      "title": "Add Step Progress Indicator to Multi-Step Booking Form",
+      "rationale": "Without a visible progress indicator, users cannot judge how much effort the form requires. Baymard Institute research finds that progress indicators reduce multi-step form abandonment by up to 28%.",
+      "suggestedFix": "Add a step counter above the form: 'Step 2 of 4 — Traveler Details' with a progress bar. Each step label should describe what the user will do ('Choose Dates', 'Traveler Info', 'Extras', 'Payment') to set expectations.",
+      "goalRelevance": "direct_booking",
+      "effort": "medium"
+    }
+  ]
+}
