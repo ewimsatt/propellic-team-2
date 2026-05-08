@@ -8,7 +8,7 @@ import type {
 } from "../types/audit.js";
 import mockData from "../../mock/audit-response.json";
 
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 const LOADING_STAGES: LoadingStage[] = [
   "Fetching page...",
