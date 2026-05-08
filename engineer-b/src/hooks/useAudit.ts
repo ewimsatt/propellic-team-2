@@ -6,7 +6,7 @@ import type {
   AuditErrorResponse,
   LoadingStage,
 } from "../types/audit.js";
-import mockData from "../../mock/audit-response.json";
+import mockData from "../mock/audit-response.json";
 
 const USE_MOCK = false;
 

@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import type { Element } from "domhandler";
 import type { CTASignal } from "../types.js";
 
 const ACTION_VERBS = [
@@ -36,7 +37,7 @@ const ABOVE_FOLD_SELECTORS = [
   "section:first-of-type",
 ];
 
-function isAboveFold($: cheerio.CheerioAPI, el: cheerio.Element): boolean {
+function isAboveFold($: cheerio.CheerioAPI, el: Element): boolean {
   const $el = $(el);
   for (const sel of ABOVE_FOLD_SELECTORS) {
     if ($el.closest(sel).length > 0) return true;
@@ -80,7 +81,7 @@ export function extractCTAs(html: string): CTASignal[] {
   return results;
 }
 
-function buildSelector($el: cheerio.Cheerio<cheerio.Element>, tagName: string): string {
+function buildSelector($el: cheerio.Cheerio<Element>, tagName: string): string {
   const id = $el.attr("id");
   if (id) return `#${id}`;
   const cls = $el.attr("class")?.split(" ").filter(Boolean).slice(0, 2).join(".");

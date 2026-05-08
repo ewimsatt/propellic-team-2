@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import type { Element } from "domhandler";
 import type { TrustSignal } from "../types.js";
 
 type TrustSignalType = TrustSignal["type"];
@@ -136,8 +137,8 @@ function extractValue(text: string, type: TrustSignalType): string | undefined {
 }
 
 function buildSelector(
-  $el: cheerio.Cheerio<cheerio.Element>,
-  el: cheerio.Element
+  $el: cheerio.Cheerio<Element>,
+  el: Element
 ): string {
   const id = $el.attr("id");
   if (id) return `#${id}`;
